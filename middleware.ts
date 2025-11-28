@@ -6,13 +6,18 @@ export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
 
   const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
-      supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    },
-    {
-      request: req,
-      response: res,
+      cookies: {
+        get: (name) => req.cookies.get(name)?.value,
+        set: (name, value, options) => {
+          res.cookies.set(name, value, options);
+        },
+        remove: (name, options) => {
+          res.cookies.delete(name, options);
+        },
+      },
     }
   );
 
@@ -22,11 +27,11 @@ export async function middleware(req: NextRequest) {
 
   // Rutas protegidas
   const protectedRoutes = ['/profile', '/admin', '/article/create'];
-  const isProtectedRoute = protectedRoutes.some(route =>
-    req.nextUrl.pathname.startsWith(route)
+  const isProtected = protectedRoutes.some((r) =>
+    req.nextUrl.pathname.startsWith(r)
   );
 
-  if (isProtectedRoute && !session) {
+  if (isProtected && !session) {
     const redirectUrl = req.nextUrl.clone();
     redirectUrl.pathname = '/login';
     redirectUrl.searchParams.set('redirectTo', req.nextUrl.pathname);
@@ -35,23 +40,23 @@ export async function middleware(req: NextRequest) {
 
   // Rutas admin
   const adminRoutes = ['/admin'];
-  const isAdminRoute = adminRoutes.some(route =>
-    req.nextUrl.pathname.startsWith(route)
+  const isAdmin = adminRoutes.some((r) =>
+    req.nextUrl.pathname.startsWith(r)
   );
 
-  if (isAdminRoute && session) {
+  if (isAdmin && session) {
     const { data: user } = await supabase
       .from('users')
       .select('role')
       .eq('id', session.user.id)
       .single();
 
-    if (user && !['admin', 'editor'].includes(user.role)) {
+    if (!user || !['admin', 'editor'].includes(user.role)) {
       return NextResponse.redirect(new URL('/', req.url));
     }
   }
 
-  // Evitar que usuarios logueados entren a login/register
+  // Si ya está logueado → no dejar entrar a login/register
   if (
     session &&
     (req.nextUrl.pathname === '/login' ||
