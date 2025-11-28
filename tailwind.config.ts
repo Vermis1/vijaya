@@ -18,13 +18,15 @@ const config: Config = {
     },
     extend: {
       colors: {
-        // Colores de la marca Vijaya
+        // Colores minimalistas de Vijaya (basados en las imágenes)
         vijaya: {
-          green: '#3E8C67',
-          lime: '#B5DDA5',
-          brown: '#CCB08A',
-          beige: '#F4F1E8',
-          black: '#111111',
+          green: '#5C7457',      // Verde oliva suave
+          lime: '#8B9B7E',       // Verde lima apagado
+          brown: '#8B7355',      // Marrón cálido
+          beige: '#F5F1E8',      // Beige claro
+          cream: '#FDFBF7',      // Crema muy claro
+          black: '#2C2C2C',      // Negro suave
+          olive: '#6B7C5E',      // Oliva medio
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -64,39 +66,39 @@ const config: Config = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
-        vijaya: "10px", // Borde característico de Vijaya
+        vijaya: "16px", // Bordes más redondeados y suaves
+        'vijaya-soft': "24px",
       },
       fontFamily: {
-        sans: ['var(--font-inter)', 'Inter', 'system-ui', 'sans-serif'],
-        heading: ['var(--font-space-grotesk)', 'Space Grotesk', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-dm-sans)', 'DM Sans', 'system-ui', 'sans-serif'],
+        heading: ['var(--font-crimson)', 'Crimson Pro', 'serif'],
       },
       boxShadow: {
-        'vijaya': '0 4px 20px rgba(62, 140, 103, 0.1)',
-        'vijaya-hover': '0 8px 30px rgba(62, 140, 103, 0.15)',
+        'vijaya': '0 2px 16px rgba(92, 116, 87, 0.08)',
+        'vijaya-hover': '0 4px 24px rgba(92, 116, 87, 0.12)',
+        'vijaya-soft': '0 1px 8px rgba(0, 0, 0, 0.04)',
       },
       keyframes: {
-        "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
-        },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
-        },
         "fade-in": {
-          from: { opacity: "0", transform: "translateY(10px)" },
+          from: { opacity: "0", transform: "translateY(8px)" },
           to: { opacity: "1", transform: "translateY(0)" },
         },
         "slide-in": {
           from: { transform: "translateX(-100%)" },
           to: { transform: "translateX(0)" },
         },
+        "float": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
       },
       animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
-        "fade-in": "fade-in 0.4s ease-out",
-        "slide-in": "slide-in 0.3s ease-out",
+        "fade-in": "fade-in 0.5s ease-out",
+        "slide-in": "slide-in 0.4s ease-out",
+        "float": "float 3s ease-in-out infinite",
+      },
+      backgroundImage: {
+        'vijaya-texture': "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%235C7457' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
       },
     },
   },

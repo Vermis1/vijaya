@@ -9,7 +9,7 @@ import ArticleContent from '@/components/article/ArticleContent';
 import CommentSection from '@/components/article/CommentSection';
 import RelatedArticles from '@/components/article/RelatedArticles';
 
-export const revalidate = 300; // ISR: revalidar cada 5 minutos
+export const revalidate = 300;
 
 interface Props {
   params: {
@@ -35,7 +35,6 @@ async function getArticle(slug: string): Promise<Article | null> {
     return null;
   }
 
-  // Incrementar views
   await supabase.rpc('increment_article_views', { article_id: data.id });
 
   return data;
@@ -91,22 +90,27 @@ export default async function ArticlePage({ params }: Props) {
   const relatedArticles = await getRelatedArticles(article.id, article.tags);
 
   return (
-    <div className="min-h-screen bg-vijaya-beige">
+    <div className="min-h-screen bg-vijaya-cream">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="text-3xl font-heading font-bold text-vijaya-green">
-              Vijaya
+      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
+        <div className="vijaya-container">
+          <div className="flex items-center justify-between h-20">
+            <Link href="/" className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-vijaya-olive rounded-full flex items-center justify-center">
+                <span className="text-white text-2xl">🌿</span>
+              </div>
+              <div className="text-2xl font-heading font-semibold text-vijaya-black">
+                Vijaya
+              </div>
             </Link>
             <nav className="hidden md:flex items-center space-x-8">
-              <Link href="/blog" className="text-gray-700 hover:text-vijaya-green transition-colors">
+              <Link href="/blog" className="text-gray-600 hover:text-vijaya-olive transition-colors font-medium">
                 Blog
               </Link>
-              <Link href="/tienda" className="text-gray-700 hover:text-vijaya-green transition-colors">
+              <Link href="/tienda" className="text-gray-600 hover:text-vijaya-olive transition-colors font-medium">
                 Tienda
               </Link>
-              <Link href="/login" className="text-gray-700 hover:text-vijaya-green transition-colors">
+              <Link href="/login" className="text-gray-600 hover:text-vijaya-olive transition-colors font-medium">
                 Iniciar Sesión
               </Link>
             </nav>
@@ -116,14 +120,14 @@ export default async function ArticlePage({ params }: Props) {
 
       {/* Article Header */}
       <article className="py-12">
-        <div className="container mx-auto px-4 max-w-4xl">
+        <div className="container mx-auto px-6 max-w-4xl">
           {/* Breadcrumb */}
           <div className="mb-8 flex items-center gap-2 text-sm text-gray-600">
-            <Link href="/" className="hover:text-vijaya-green">Inicio</Link>
+            <Link href="/" className="hover:text-vijaya-olive transition-colors">Inicio</Link>
             <span>/</span>
-            <Link href="/blog" className="hover:text-vijaya-green">Blog</Link>
+            <Link href="/blog" className="hover:text-vijaya-olive transition-colors">Blog</Link>
             <span>/</span>
-            <span className="text-vijaya-green">{article.title}</span>
+            <span className="text-vijaya-olive font-medium">{article.title}</span>
           </div>
 
           {/* Tags */}
@@ -131,7 +135,7 @@ export default async function ArticlePage({ params }: Props) {
             {article.tags.map((tag) => (
               <span 
                 key={tag}
-                className="text-sm bg-vijaya-lime/30 text-vijaya-green px-4 py-1 rounded-full"
+                className="text-sm bg-vijaya-beige text-vijaya-olive px-4 py-2 rounded-full font-medium"
               >
                 {tag}
               </span>
@@ -144,19 +148,21 @@ export default async function ArticlePage({ params }: Props) {
           </h1>
 
           {/* Meta */}
-          <div className="flex items-center gap-6 mb-8 pb-8 border-b border-gray-200">
-            <div className="flex items-center gap-3">
-              {article.author?.avatar_url && (
-                <Image
+          <div className="flex items-center gap-6 mb-12 pb-8 border-b-2 border-gray-100">
+            <div className="flex items-center gap-4">
+              {article.author?.avatar_url ? (
+                <img
                   src={article.author.avatar_url}
                   alt={article.author.username}
-                  width={48}
-                  height={48}
-                  className="rounded-full"
+                  className="w-14 h-14 rounded-full"
                 />
+              ) : (
+                <div className="w-14 h-14 bg-vijaya-olive rounded-full flex items-center justify-center text-white text-xl font-bold">
+                  {article.author?.username[0].toUpperCase()}
+                </div>
               )}
               <div>
-                <div className="font-medium text-vijaya-black">{article.author?.username}</div>
+                <div className="font-semibold text-vijaya-black text-lg">{article.author?.username}</div>
                 <div className="text-sm text-gray-600">
                   {formatDate(article.created_at)} • {getReadingTime(article.content)} min de lectura
                 </div>
@@ -166,54 +172,54 @@ export default async function ArticlePage({ params }: Props) {
 
           {/* Cover Image */}
           {article.cover_image && (
-            <div className="relative w-full h-[400px] md:h-[500px] rounded-vijaya overflow-hidden mb-12">
-              <Image
+            <div className="relative w-full h-[400px] md:h-[500px] rounded-vijaya-soft overflow-hidden mb-16 shadow-vijaya">
+              <img
                 src={article.cover_image}
                 alt={article.title}
-                fill
-                className="object-cover"
-                priority
+                className="w-full h-full object-cover"
               />
             </div>
           )}
 
           {/* Content */}
-          <div className="prose prose-lg max-w-none mb-16">
+          <div className="prose prose-lg max-w-none mb-16 text-gray-700 leading-relaxed">
             <ArticleContent content={article.content} />
           </div>
 
           {/* Share Buttons */}
-          <div className="flex items-center gap-4 py-8 border-y border-gray-200 mb-12">
-            <span className="text-gray-600 font-medium">Compartir:</span>
-            <button className="px-4 py-2 bg-vijaya-green/10 text-vijaya-green rounded-vijaya hover:bg-vijaya-green/20 transition-colors">
+          <div className="flex items-center gap-4 py-8 border-y-2 border-gray-100 mb-16">
+            <span className="text-gray-600 font-semibold">Compartir:</span>
+            <button className="px-6 py-3 bg-vijaya-beige text-vijaya-olive rounded-full hover:bg-vijaya-olive hover:text-white transition-all font-medium">
               Twitter
             </button>
-            <button className="px-4 py-2 bg-vijaya-green/10 text-vijaya-green rounded-vijaya hover:bg-vijaya-green/20 transition-colors">
+            <button className="px-6 py-3 bg-vijaya-beige text-vijaya-olive rounded-full hover:bg-vijaya-olive hover:text-white transition-all font-medium">
               Facebook
             </button>
-            <button className="px-4 py-2 bg-vijaya-green/10 text-vijaya-green rounded-vijaya hover:bg-vijaya-green/20 transition-colors">
+            <button className="px-6 py-3 bg-vijaya-beige text-vijaya-olive rounded-full hover:bg-vijaya-olive hover:text-white transition-all font-medium">
               WhatsApp
             </button>
           </div>
 
           {/* Author Bio */}
-          <div className="vijaya-card p-8 mb-12">
-            <div className="flex items-start gap-4">
-              {article.author?.avatar_url && (
-                <Image
+          <div className="vijaya-card p-8 mb-16">
+            <div className="flex items-start gap-6">
+              {article.author?.avatar_url ? (
+                <img
                   src={article.author.avatar_url}
                   alt={article.author.username}
-                  width={80}
-                  height={80}
-                  className="rounded-full"
+                  className="w-20 h-20 rounded-full flex-shrink-0"
                 />
+              ) : (
+                <div className="w-20 h-20 bg-vijaya-olive rounded-full flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">
+                  {article.author?.username[0].toUpperCase()}
+                </div>
               )}
               <div>
-                <h3 className="text-xl font-heading font-semibold mb-2">
-                  Sobre {article.author?.username}
+                <h3 className="text-2xl font-heading font-semibold mb-2 text-vijaya-black">
+                  {article.author?.username}
                 </h3>
-                <p className="text-gray-600">
-                  Escritor apasionado por la cultura del cannabis y el contenido de calidad.
+                <p className="text-gray-600 leading-relaxed">
+                  Escritor apasionado por la cultura del cannabis y el cultivo orgánico.
                 </p>
               </div>
             </div>
@@ -230,10 +236,36 @@ export default async function ArticlePage({ params }: Props) {
       )}
 
       {/* Footer */}
-      <footer className="bg-vijaya-black text-white py-12 mt-16">
-        <div className="container mx-auto px-4 text-center">
-          <div className="text-2xl font-heading font-bold mb-4">Vijaya</div>
-          <p className="text-white/70">© 2024 Vijaya. Todos los derechos reservados.</p>
+      <footer className="bg-vijaya-black text-white py-16 mt-20">
+        <div className="vijaya-container">
+          <div className="grid md:grid-cols-3 gap-12 mb-12">
+            <div>
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-10 h-10 bg-vijaya-olive rounded-full flex items-center justify-center">
+                  <span className="text-white text-xl">🌿</span>
+                </div>
+                <div className="text-2xl font-heading font-semibold">Vijaya</div>
+              </div>
+              <p className="text-white/70">Cultivando conocimiento orgánico</p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Navegación</h4>
+              <ul className="space-y-2 text-white/70">
+                <li><Link href="/blog" className="hover:text-white transition-colors">Blog</Link></li>
+                <li><Link href="/tienda" className="hover:text-white transition-colors">Tienda</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Comunidad</h4>
+              <ul className="space-y-2 text-white/70">
+                <li><a href="#" className="hover:text-white transition-colors">Instagram</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Facebook</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="pt-8 border-t border-white/10 text-center text-white/50">
+            © 2024 Vijaya. Todos los derechos reservados.
+          </div>
         </div>
       </footer>
     </div>

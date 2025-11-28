@@ -8,22 +8,27 @@ export const metadata: Metadata = {
 
 export default function TiendaPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-vijaya-beige via-white to-vijaya-lime/10">
+    <div className="min-h-screen bg-vijaya-cream">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="text-3xl font-heading font-bold text-vijaya-green">
-              Vijaya
+      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-100">
+        <div className="vijaya-container">
+          <div className="flex items-center justify-between h-20">
+            <Link href="/" className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-vijaya-olive rounded-full flex items-center justify-center">
+                <span className="text-white text-2xl">🌿</span>
+              </div>
+              <div className="text-2xl font-heading font-semibold text-vijaya-black">
+                Vijaya
+              </div>
             </Link>
             <nav className="hidden md:flex items-center space-x-8">
-              <Link href="/blog" className="text-gray-700 hover:text-vijaya-green transition-colors">
+              <Link href="/blog" className="text-gray-600 hover:text-vijaya-olive transition-colors font-medium">
                 Blog
               </Link>
-              <Link href="/tienda" className="text-vijaya-green font-medium">
+              <Link href="/tienda" className="text-vijaya-olive font-semibold">
                 Tienda
               </Link>
-              <Link href="/login" className="text-gray-700 hover:text-vijaya-green transition-colors">
+              <Link href="/login" className="text-gray-600 hover:text-vijaya-olive transition-colors font-medium">
                 Iniciar Sesión
               </Link>
             </nav>
@@ -32,62 +37,47 @@ export default function TiendaPage() {
       </header>
 
       {/* Coming Soon Section */}
-      <section className="flex items-center justify-center min-h-[calc(100vh-200px)] px-4 py-20">
+      <section className="flex items-center justify-center min-h-[calc(100vh-200px)] px-6 py-20 bg-texture">
         <div className="text-center max-w-3xl animate-fade-in">
-          {/* Icon/Illustration */}
-          <div className="mb-8 flex justify-center">
-            <div className="relative">
-              <div className="w-32 h-32 bg-vijaya-green/10 rounded-full flex items-center justify-center">
-                <svg
-                  className="w-16 h-16 text-vijaya-green"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                  />
-                </svg>
+          {/* Illustration */}
+          <div className="mb-12 flex justify-center">
+            <div className="relative illustration-float">
+              <div className="w-48 h-48 bg-vijaya-beige rounded-full flex items-center justify-center">
+                <span className="text-9xl">🏡</span>
               </div>
-              {/* Animated circles */}
-              <div className="absolute inset-0 animate-ping opacity-20">
-                <div className="w-32 h-32 bg-vijaya-green rounded-full"></div>
-              </div>
+              <div className="absolute -top-4 -right-4 w-24 h-24 bg-vijaya-olive/20 rounded-full animate-ping"></div>
             </div>
           </div>
 
           {/* Title */}
-          <h1 className="text-5xl md:text-7xl font-heading font-bold text-vijaya-black mb-6">
+          <h1 className="text-6xl md:text-7xl font-heading font-bold text-vijaya-black mb-6">
             Próximamente
           </h1>
 
           {/* Subtitle */}
-          <p className="text-xl md:text-2xl text-gray-600 mb-8">
-            Estamos trabajando en algo especial para ti
+          <p className="text-2xl md:text-3xl text-gray-600 mb-8 font-heading">
+            Estamos cultivando algo especial
           </p>
 
           {/* Description */}
-          <p className="text-lg text-gray-500 mb-12 max-w-2xl mx-auto">
-            Nuestra tienda estará disponible muy pronto con productos de calidad, 
-            accesorios únicos y todo lo que necesitas para disfrutar de la cultura cannabis.
+          <p className="text-lg text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed">
+            Nuestra tienda estará disponible muy pronto con fertilizantes orgánicos, 
+            accesorios de cultivo y todo lo necesario para tus plantas.
           </p>
 
           {/* Newsletter */}
-          <div className="vijaya-card p-8 max-w-md mx-auto mb-8">
-            <h3 className="text-xl font-heading font-semibold mb-3">
-              Sé el primero en enterarte
+          <div className="vijaya-card p-8 max-w-md mx-auto mb-12 bg-white">
+            <h3 className="text-2xl font-heading font-semibold mb-3 text-vijaya-black">
+              Sé el primero en saberlo
             </h3>
             <p className="text-gray-600 mb-6">
-              Regístrate y te notificaremos cuando la tienda esté lista
+              Te notificaremos cuando la tienda esté lista
             </p>
             <form className="space-y-4">
               <input
                 type="email"
                 placeholder="Tu correo electrónico"
-                className="w-full px-4 py-3 rounded-vijaya border border-gray-300 focus:outline-none focus:ring-2 focus:ring-vijaya-green"
+                className="w-full px-6 py-4 rounded-vijaya border-2 border-gray-200 focus:outline-none focus:border-vijaya-olive transition-colors"
               />
               <button
                 type="submit"
@@ -100,69 +90,27 @@ export default function TiendaPage() {
 
           {/* Features Preview */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
-            <div className="vijaya-card p-6">
-              <div className="w-12 h-12 bg-vijaya-lime/30 rounded-vijaya flex items-center justify-center mb-4 mx-auto">
-                <svg
-                  className="w-6 h-6 text-vijaya-green"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-              </div>
-              <h4 className="font-heading font-semibold mb-2">Calidad Premium</h4>
+            <div className="vijaya-card p-8 bg-white">
+              <div className="text-5xl mb-4">🌱</div>
+              <h4 className="font-heading font-semibold text-lg mb-2 text-vijaya-black">100% Orgánico</h4>
               <p className="text-sm text-gray-600">
-                Solo los mejores productos seleccionados
+                Productos naturales de máxima calidad
               </p>
             </div>
 
-            <div className="vijaya-card p-6">
-              <div className="w-12 h-12 bg-vijaya-lime/30 rounded-vijaya flex items-center justify-center mb-4 mx-auto">
-                <svg
-                  className="w-6 h-6 text-vijaya-green"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 10V3L4 14h7v7l9-11h-7z"
-                  />
-                </svg>
-              </div>
-              <h4 className="font-heading font-semibold mb-2">Envío Rápido</h4>
+            <div className="vijaya-card p-8 bg-white">
+              <div className="text-5xl mb-4">🚚</div>
+              <h4 className="font-heading font-semibold text-lg mb-2 text-vijaya-black">Envío Rápido</h4>
               <p className="text-sm text-gray-600">
-                Entrega segura y discreta
+                Entrega segura a todo el país
               </p>
             </div>
 
-            <div className="vijaya-card p-6">
-              <div className="w-12 h-12 bg-vijaya-lime/30 rounded-vijaya flex items-center justify-center mb-4 mx-auto">
-                <svg
-                  className="w-6 h-6 text-vijaya-green"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-              <h4 className="font-heading font-semibold mb-2">Mejores Precios</h4>
+            <div className="vijaya-card p-8 bg-white">
+              <div className="text-5xl mb-4">💚</div>
+              <h4 className="font-heading font-semibold text-lg mb-2 text-vijaya-black">Sostenible</h4>
               <p className="text-sm text-gray-600">
-                Ofertas exclusivas para la comunidad
+                Comprometidos con el planeta
               </p>
             </div>
           </div>
@@ -171,7 +119,7 @@ export default function TiendaPage() {
           <div className="mt-12">
             <Link 
               href="/"
-              className="inline-flex items-center text-vijaya-green hover:underline"
+              className="inline-flex items-center text-vijaya-olive hover:text-vijaya-green transition-colors font-medium"
             >
               <svg
                 className="w-5 h-5 mr-2"
@@ -193,10 +141,36 @@ export default function TiendaPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-vijaya-black text-white py-12">
-        <div className="container mx-auto px-4 text-center">
-          <div className="text-2xl font-heading font-bold mb-4">Vijaya</div>
-          <p className="text-white/70">© 2024 Vijaya. Todos los derechos reservados.</p>
+      <footer className="bg-vijaya-black text-white py-16">
+        <div className="vijaya-container">
+          <div className="grid md:grid-cols-3 gap-12 mb-12">
+            <div>
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-10 h-10 bg-vijaya-olive rounded-full flex items-center justify-center">
+                  <span className="text-white text-xl">🌿</span>
+                </div>
+                <div className="text-2xl font-heading font-semibold">Vijaya</div>
+              </div>
+              <p className="text-white/70">Cultivando conocimiento orgánico</p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Navegación</h4>
+              <ul className="space-y-2 text-white/70">
+                <li><Link href="/blog" className="hover:text-white transition-colors">Blog</Link></li>
+                <li><Link href="/tienda" className="hover:text-white transition-colors">Tienda</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Comunidad</h4>
+              <ul className="space-y-2 text-white/70">
+                <li><a href="#" className="hover:text-white transition-colors">Instagram</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Facebook</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="pt-8 border-t border-white/10 text-center text-white/50">
+            © 2024 Vijaya. Todos los derechos reservados.
+          </div>
         </div>
       </footer>
     </div>
