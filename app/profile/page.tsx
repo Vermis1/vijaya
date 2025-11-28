@@ -37,7 +37,9 @@ async function getFavoriteArticles(userId: string): Promise<Article[]> {
     `)
     .eq('user_id', userId);
 
-  return data?.map(f => f.article).filter(Boolean) || [];
+    return (data || [])
+    .map((row: any) => row.article as Article)
+    .filter(Boolean);
 }
 
 export default async function ProfilePage() {
