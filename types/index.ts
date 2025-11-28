@@ -4,7 +4,13 @@ export type ArticleStatus = 'draft' | 'pending_review' | 'published' | 'rejected
 
 export type AdType = 'banner' | 'sidebar' | 'inline' | 'popup';
 
-export type AdPlacement = 'header' | 'sidebar' | 'article_top' | 'article_middle' | 'article_bottom' | 'footer';
+export type AdPlacement =
+  | 'header'
+  | 'sidebar'
+  | 'article_top'
+  | 'article_middle'
+  | 'article_bottom'
+  | 'footer';
 
 export type SponsorPlacement = 'sidebar' | 'header' | 'footer' | 'article';
 
@@ -21,7 +27,7 @@ export interface Article {
   id: string;
   title: string;
   slug: string;
-  content: any; // JSON content from TipTap
+  content: any; // TipTap JSON
   cover_image?: string;
   author_id: string;
   author?: User;
@@ -37,10 +43,19 @@ export interface Comment {
   id: string;
   article_id: string;
   user_id: string;
+
+  // Relaciones
   user?: User;
+  article?: {
+    id: string;
+    title: string;
+    slug: string;
+  } | null;
+
   content: string;
   parent_id?: string;
   replies?: Comment[];
+
   likes: number;
   dislikes: number;
   reported: boolean;
