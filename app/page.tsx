@@ -35,7 +35,7 @@ export default async function HomePage() {
           <div className="flex items-center justify-between h-20">
             <Link href="/" className="flex items-center space-x-3">
               <div className="w-12 h-12 bg-vijaya-olive rounded-full flex items-center justify-center">
-                <span className="text-white text-2xl">🌿</span>
+                <span className="text-white text-2xl"><img src="img/logo.png" alt="Vijaya" className="w-full" /></span>
               </div>
               <div className="text-2xl font-heading font-semibold text-vijaya-black">
                 Vijaya

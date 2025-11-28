@@ -58,7 +58,7 @@ export default function RegisterForm() {
     }
 
     try {
-      // Registrar usuario
+      // Registrar usuario con metadata
       const { data, error: signUpError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
@@ -72,16 +72,7 @@ export default function RegisterForm() {
       if (signUpError) throw signUpError;
 
       if (data.user) {
-        // Crear perfil en la tabla users
-        const { error: profileError } = await supabase.from('users').insert({
-          id: data.user.id,
-          username: formData.username,
-          email: formData.email,
-          role: 'user',
-        });
-
-        if (profileError) throw profileError;
-
+        // El trigger handle_new_user creará automáticamente el perfil
         setSuccess(true);
         
         // Redirigir después de 2 segundos
