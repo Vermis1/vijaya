@@ -85,7 +85,7 @@ export default async function HomePage() {
             {/* Ilustración (placeholder para tu logo/ilustración) */}
             <div className="relative hidden lg:block illustration-float">
               <div className="w-full aspect-square bg-vijaya-beige/30 rounded-full flex items-center justify-center">
-                <div className="text-[200px]">🏡</div>
+                <div className="text-[200px]"><img src="img/logo.png" alt="Vijaya" className="w-full" /></div>
               </div>
             </div>
           </div>
@@ -107,7 +107,7 @@ export default async function HomePage() {
           {articles.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-gray-500 text-lg mb-6">Pronto compartiremos contenido contigo</p>
-              <div className="text-8xl opacity-20">🌱</div>
+              <div className="text-8xl opacity-20"><img src="img/logo.png" alt="Vijaya" className="w-full" /></div>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -160,8 +160,8 @@ export default async function HomePage() {
       {/* CTA Section */}
       <section className="vijaya-section bg-vijaya-olive relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 text-8xl">🌿</div>
-          <div className="absolute bottom-10 right-10 text-8xl">🌱</div>
+          <div className="absolute top-10 left-10 text-8xl"><img src="img/logo.png" alt="Vijaya" className="w-full" /></div>
+          <div className="absolute bottom-10 right-10 text-8xl"><img src="img/logo.png" alt="Vijaya" className="w-full" /></div>
         </div>
         <div className="vijaya-container relative z-10">
           <div className="max-w-3xl mx-auto text-center space-y-6">
@@ -185,7 +185,7 @@ export default async function HomePage() {
             <div>
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-10 h-10 bg-vijaya-olive rounded-full flex items-center justify-center">
-                  <span className="text-white text-xl">🌿</span>
+                  <span className="text-white text-xl"><img src="img/logo.png" alt="Vijaya" className="w-full" /></span>
                 </div>
                 <div className="text-2xl font-heading font-semibold">Vijaya</div>
               </div>
