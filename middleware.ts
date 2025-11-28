@@ -1,22 +1,31 @@
-import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
+import { createServerClient } from '@supabase/ssr';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
-  const supabase = createMiddlewareClient({ req, res });
+
+  const supabase = createServerClient(
+    {
+      supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    },
+    {
+      request: req,
+      response: res,
+    }
+  );
 
   const {
     data: { session },
   } = await supabase.auth.getSession();
 
-  // Rutas protegidas que requieren autenticación
+  // Rutas protegidas
   const protectedRoutes = ['/profile', '/admin', '/article/create'];
-  const isProtectedRoute = protectedRoutes.some(route => 
+  const isProtectedRoute = protectedRoutes.some(route =>
     req.nextUrl.pathname.startsWith(route)
   );
 
-  // Si es una ruta protegida y no hay sesión, redirigir a login
   if (isProtectedRoute && !session) {
     const redirectUrl = req.nextUrl.clone();
     redirectUrl.pathname = '/login';
@@ -24,28 +33,30 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
-  // Rutas admin que requieren rol admin o editor
+  // Rutas admin
   const adminRoutes = ['/admin'];
-  const isAdminRoute = adminRoutes.some(route => 
+  const isAdminRoute = adminRoutes.some(route =>
     req.nextUrl.pathname.startsWith(route)
   );
 
   if (isAdminRoute && session) {
-    // Obtener el rol del usuario
     const { data: user } = await supabase
       .from('users')
       .select('role')
       .eq('id', session.user.id)
       .single();
 
-    // Solo admin y editor pueden acceder al panel admin
     if (user && !['admin', 'editor'].includes(user.role)) {
       return NextResponse.redirect(new URL('/', req.url));
     }
   }
 
-  // Si ya está logueado y trata de acceder a login/register, redirigir a home
-  if (session && (req.nextUrl.pathname === '/login' || req.nextUrl.pathname === '/register')) {
+  // Evitar que usuarios logueados entren a login/register
+  if (
+    session &&
+    (req.nextUrl.pathname === '/login' ||
+      req.nextUrl.pathname === '/register')
+  ) {
     return NextResponse.redirect(new URL('/', req.url));
   }
 
