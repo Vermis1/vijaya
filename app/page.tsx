@@ -84,10 +84,14 @@ export default async function HomePage() {
 
             {/* Ilustración (placeholder para tu logo/ilustración) */}
             <div className="relative hidden lg:block illustration-float">
-              <div className="w-full aspect-square bg-vijaya-beige/30 rounded-full flex items-center justify-center">
-                <div className="text-[200px]"><img src="img/logo.png" alt="Vijaya" className="w-full" /></div>
-              </div>
-            </div>
+  <div className="w-full aspect-square bg-vijaya-beige/30 rounded-full flex items-center justify-center p-12">
+    <img 
+      src="/img/logo.png" 
+      alt="Vijaya" 
+      className="w-full h-full object-contain"
+    />
+  </div>
+</div>
           </div>
         </div>
       </section>
