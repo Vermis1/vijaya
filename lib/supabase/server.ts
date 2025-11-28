@@ -1,44 +1,45 @@
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
+import { createServerClient } from '@supabase/ssr';
 import { cache } from 'react';
 
 export const createServerSupabaseClient = cache(() => {
   const cookieStore = cookies();
-  return createServerComponentClient({ cookies: () => cookieStore });
+
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+      },
+    }
+  );
 });
 
 export async function getSession() {
   const supabase = createServerSupabaseClient();
-  try {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    return session;
-  } catch (error) {
-    console.error('Error:', error);
-    return null;
-  }
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  return session;
 }
 
 export async function getUserProfile() {
   const supabase = createServerSupabaseClient();
   const session = await getSession();
-  
-  if (!session?.user) {
-    return null;
-  }
 
-  try {
-    const { data: profile, error } = await supabase
-      .from('users')
-      .select('*')
-      .eq('id', session.user.id)
-      .single();
+  if (!session?.user) return null;
 
-    if (error) throw error;
-    return profile;
-  } catch (error) {
-    console.error('Error fetching user profile:', error);
-    return null;
-  }
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('id', session.user.id)
+    .single();
+
+  if (error) return null;
+  return data;
 }
