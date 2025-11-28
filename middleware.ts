@@ -12,10 +12,12 @@ export async function middleware(req: NextRequest) {
       cookies: {
         get: (name) => req.cookies.get(name)?.value,
         set: (name, value, options) => {
+          // Next 14: set(name, value, options)
           res.cookies.set(name, value, options);
         },
-        remove: (name, options) => {
-          res.cookies.delete(name, options);
+        remove: (name) => {
+          // Next 14: delete(name) SOLO acepta 1 parámetro
+          res.cookies.delete(name);
         },
       },
     }
@@ -38,13 +40,8 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
-  // Rutas admin
-  const adminRoutes = ['/admin'];
-  const isAdmin = adminRoutes.some((r) =>
-    req.nextUrl.pathname.startsWith(r)
-  );
-
-  if (isAdmin && session) {
+  // Restricción de roles para /admin
+  if (req.nextUrl.pathname.startsWith('/admin') && session) {
     const { data: user } = await supabase
       .from('users')
       .select('role')
@@ -56,7 +53,7 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // Si ya está logueado → no dejar entrar a login/register
+  // Evitar que usuarios logueados entren a login/register
   if (
     session &&
     (req.nextUrl.pathname === '/login' ||
