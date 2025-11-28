@@ -1,14 +1,13 @@
-# 🌿 Vijaya - Plataforma de Blog Cannabis
-
+#  Vijaya
 Plataforma moderna de contenido sobre cannabis, cultura y comunidad construida con Next.js 14, TypeScript, Supabase y TailwindCSS.
 
 ![Vijaya](https://img.shields.io/badge/version-1.0.0-green.svg)
 ![Next.js](https://img.shields.io/badge/Next.js-14-black.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue.svg)
 
-## ✨ Características
+##  Características
 
-### 🎨 Frontend
+###  Frontend
 - **Next.js 14** con App Router
 - **TypeScript** para type safety
 - **TailwindCSS** + diseño minimalista Vijaya
@@ -16,20 +15,20 @@ Plataforma moderna de contenido sobre cannabis, cultura y comunidad construida c
 - **ISR** (Incremental Static Regeneration)
 - **Responsive** design
 
-### ✍️ Editor
+###  Editor
 - **TipTap** editor estilo Notion
 - Texto enriquecido completo
 - Imágenes, videos, enlaces
 - Blockquotes, listas, código
 - Guardado en JSON
 
-### 👥 Autenticación & Roles
+###  Autenticación & Roles
 - Login / Registro con Supabase Auth
 - 5 roles: Admin, Editor, Journalist, Author, User
 - Middleware de protección de rutas
 - Row Level Security (RLS)
 
-### 📝 Blog
+###  Blog
 - Artículos con cover image
 - Sistema de tags
 - Comentarios anidados
@@ -37,7 +36,7 @@ Plataforma moderna de contenido sobre cannabis, cultura y comunidad construida c
 - Favoritos
 - Búsqueda y filtros
 
-### 🛠 Panel Admin Completo
+###  Panel Admin Completo
 - Dashboard con estadísticas
 - Gestión de artículos (CRUD)
 - Sistema de aprobación de contenido
@@ -47,12 +46,12 @@ Plataforma moderna de contenido sobre cannabis, cultura y comunidad construida c
 - Anuncios / Google Adsense
 - Configuración del sitio
 
-### 💰 Monetización
+###  Monetización
 - Sistema de sponsors
 - Google Adsense integrado
 - Ubicaciones personalizables
 
-## 🚀 Instalación
+##  Instalación
 
 ### Prerequisitos
 - Node.js 18+
@@ -103,7 +102,7 @@ npm run dev
 
 Abre [http://localhost:3000](http://localhost:3000)
 
-## 📁 Estructura del Proyecto
+##  Estructura del Proyecto
 
 ```
 vijaya/
@@ -141,7 +140,7 @@ vijaya/
 └── middleware.ts
 ```
 
-## 🎨 Identidad Visual
+##  Identidad Visual
 
 ### Colores Vijaya
 ```css
@@ -163,7 +162,7 @@ vijaya/
 - Bordes redondeados: 10-12px
 - Animaciones sutiles
 
-## 🔐 Roles y Permisos
+##  Roles y Permisos
 
 | Rol | Crear Artículos | Editar Propios | Editar Todos | Moderar | Admin Panel |
 |-----|----------------|----------------|--------------|---------|-------------|
@@ -173,7 +172,7 @@ vijaya/
 | **Editor** | ✅ | ✅ | ✅ | ✅ | ✅ |
 | **Admin** | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-## 📦 Deploy en Vercel
+##  Deploy en Vercel
 
 1. **Push a GitHub**
 ```bash
@@ -201,7 +200,7 @@ npm run start    # Servidor de producción
 npm run lint     # Lint del código
 ```
 
-## 📚 Stack Tecnológico
+##  Stack Tecnológico
 
 - **Framework:** Next.js 14
 - **Lenguaje:** TypeScript
@@ -215,7 +214,7 @@ npm run lint     # Lint del código
 - **State:** Zustand (opcional)
 - **Deploy:** Vercel
 
-## 🤝 Contribuir
+##  Contribuir
 
 Las contribuciones son bienvenidas. Por favor:
 
@@ -225,17 +224,11 @@ Las contribuciones son bienvenidas. Por favor:
 4. Push al branch (`git push origin feature/AmazingFeature`)
 5. Abre un Pull Request
 
-## 📝 Licencia
+##  Licencia
 
 Este proyecto está bajo la Licencia MIT.
 
-## 👤 Autor
-
-**Tu Nombre**
-- Website: [tuweb.com](https://tuweb.com)
-- GitHub: [@tuusuario](https://github.com/tuusuario)
-
-## 🙏 Agradecimientos
+##  Agradecimientos
 
 - Next.js Team
 - Supabase Team
@@ -244,7 +237,4 @@ Este proyecto está bajo la Licencia MIT.
 - Comunidad Open Source
 
 ---
-
-⭐ Si este proyecto te fue útil, considera darle una estrella en GitHub
-
-🌿 **Vijaya** - Construido con 💚 para la comunidad cannabis
+ **Vijaya** - Construido con 💚 para la comunidad cannabis
