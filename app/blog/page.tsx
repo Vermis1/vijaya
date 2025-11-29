@@ -57,7 +57,7 @@ export default async function BlogPage() {
           <div className="flex items-center justify-between h-20">
             <Link href="/" className="flex items-center space-x-3">
               <div className="w-12 h-12 bg-vijaya-olive rounded-full flex items-center justify-center">
-                <span className="text-white text-2xl">🌿</span>
+                <span className="text-white text-2xl"><img src="img/logo.png" alt="Vijaya" className="w-full" /></span>
               </div>
               <div className="text-2xl font-heading font-semibold text-vijaya-black">
                 Vijaya
@@ -81,8 +81,8 @@ export default async function BlogPage() {
       {/* Hero */}
       <section className="bg-vijaya-olive py-16 md:py-20 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
-          <div className="text-9xl absolute top-5 right-10">🌿</div>
-          <div className="text-7xl absolute bottom-5 left-10">📖</div>
+          <div className="text-9xl absolute top-5 right-10"><img src="img/logo.png" alt="Vijaya" className="w-full" /></div>
+          <div className="text-7xl absolute bottom-5 left-10"></div>
         </div>
         <div className="vijaya-container relative z-10">
           <div className="max-w-3xl">
@@ -262,7 +262,7 @@ export default async function BlogPage() {
             <div>
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-10 h-10 bg-vijaya-olive rounded-full flex items-center justify-center">
-                  <span className="text-white text-xl">🌿</span>
+                  <span className="text-white text-xl"><img src="img/logo.png" alt="Vijaya" className="w-full" /></span>
                 </div>
                 <div className="text-2xl font-heading font-semibold">Vijaya</div>
               </div>

@@ -97,7 +97,7 @@ export default async function ArticlePage({ params }: Props) {
           <div className="flex items-center justify-between h-20">
             <Link href="/" className="flex items-center space-x-3">
               <div className="w-12 h-12 bg-vijaya-olive rounded-full flex items-center justify-center">
-                <span className="text-white text-2xl">🌿</span>
+                <span className="text-white text-2xl"><img src="img/logo.png" alt="Vijaya" className="w-full" /></span>
               </div>
               <div className="text-2xl font-heading font-semibold text-vijaya-black">
                 Vijaya
@@ -242,7 +242,7 @@ export default async function ArticlePage({ params }: Props) {
             <div>
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-10 h-10 bg-vijaya-olive rounded-full flex items-center justify-center">
-                  <span className="text-white text-xl">🌿</span>
+                  <span className="text-white text-xl"><img src="img/logo.png" alt="Vijaya" className="w-full" /></span>
                 </div>
                 <div className="text-2xl font-heading font-semibold">Vijaya</div>
               </div>
