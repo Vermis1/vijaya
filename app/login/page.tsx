@@ -15,7 +15,7 @@ export default function LoginPage() {
         <Link href="/" className="flex justify-center mb-10">
           <div className="flex items-center space-x-3">
             <div className="w-14 h-14 bg-vijaya-olive rounded-full flex items-center justify-center">
-              <span className="text-white text-3xl">🌿</span>
+              <span className="text-white text-3xl"><img src="img/logo.png" alt="Vijaya" className="w-full" /></span>
             </div>
             <div className="text-4xl font-heading font-bold text-vijaya-black">
               Vijaya
