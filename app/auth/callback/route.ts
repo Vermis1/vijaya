@@ -1,16 +1,29 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
+import { createServerClient } from '@supabase/ssr';
 
-export async function GET(request: Request) {
-  const requestUrl = new URL(request.url);
-  const code = requestUrl.searchParams.get('code');
+export async function GET(req: Request) {
+  const url = new URL(req.url);
+  const code = url.searchParams.get('code');
 
-  if (code) {
-    const supabase = createRouteHandlerClient({ cookies });
-    await supabase.auth.exchangeCodeForSession(code);
+  if (!code) {
+    return NextResponse.redirect('/login');
   }
 
-  // Redirigir al usuario a la página de inicio
-  return NextResponse.redirect(new URL('/login?confirmed=true', request.url));
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name) {
+          return req.headers.get('cookie') ?? '';
+        },
+        set() {},
+        remove() {}
+      }
+    }
+  );
+
+  await supabase.auth.exchangeCodeForSession(code);
+
+  return NextResponse.redirect('/login?confirmed=true');
 }
