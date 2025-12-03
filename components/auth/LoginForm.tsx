@@ -20,36 +20,63 @@ export default function LoginForm() {
     setError(null);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      // 1. Login con Supabase
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) throw error;
-
-      if (data.session) {
-        // Verificar si el usuario existe en la tabla users
-        const { data: userProfile } = await supabase
-          .from('users')
-          .select('*')
-          .eq('id', data.user.id)
-          .single();
-
-        if (!userProfile) {
-          // Si no existe, crear el perfil
-          await supabase.from('users').insert({
-            id: data.user.id,
-            email: data.user.email,
-            username: data.user.email?.split('@')[0] || 'user',
-            role: 'user',
-          });
-        }
-
-        router.push('/profile');
-        router.refresh();
+      if (signInError) {
+        throw signInError;
       }
+
+      if (!data.session) {
+        throw new Error('No se pudo crear la sesión');
+      }
+
+      // 2. Verificar que el usuario existe en la tabla users
+      const { data: userProfile, error: profileError } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', data.user.id)
+        .single();
+
+      // 3. Si no existe el perfil, crearlo
+      if (profileError || !userProfile) {
+        console.log('Creando perfil de usuario...');
+        const { error: insertError } = await supabase.from('users').insert({
+          id: data.user.id,
+          email: data.user.email,
+          username: data.user.email?.split('@')[0] || 'user',
+          role: 'user',
+        });
+
+        if (insertError) {
+          console.error('Error al crear perfil:', insertError);
+        }
+      }
+
+      // 4. Esperar un momento para que se sincronice todo
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // 5. Recargar para actualizar la sesión en el servidor
+      router.refresh();
+
+      // 6. Redirigir según el rol
+      if (userProfile?.role === 'admin' || userProfile?.role === 'editor') {
+        router.push('/admin');
+      } else {
+        router.push('/profile');
+      }
+
+      // 7. Forzar recarga de la página
+      window.location.href = userProfile?.role === 'admin' || userProfile?.role === 'editor' 
+        ? '/admin' 
+        : '/profile';
+
     } catch (error: any) {
-      setError(error.message || 'Error al iniciar sesión');
+      console.error('Error en login:', error);
+      setError(error.message || 'Error al iniciar sesión. Verifica tus credenciales.');
     } finally {
       setLoading(false);
     }
@@ -73,6 +100,7 @@ export default function LoginForm() {
           onChange={(e) => setEmail(e.target.value)}
           required
           disabled={loading}
+          autoComplete="email"
         />
       </div>
 
@@ -86,6 +114,7 @@ export default function LoginForm() {
           onChange={(e) => setPassword(e.target.value)}
           required
           disabled={loading}
+          autoComplete="current-password"
         />
       </div>
 
