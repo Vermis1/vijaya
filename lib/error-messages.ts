@@ -53,11 +53,15 @@ export function getReadableErrorMessage(error: any): string {
     return 'Ocurrió un error al guardar el artículo. Por favor, intenta nuevamente.';
   }
   
-  /**
-   * Alias requerido por ArticleForm.tsx
-   * NO reemplaza la lógica existente, solo la reutiliza
-   */
   export function getValidationErrorMessage(error: unknown): string {
     return getReadableErrorMessage(error);
   }
+  export function getSuccessMessage(
+    message?: string
+  ): string {
+    if (message && typeof message === 'string') {
+      return message;
+    }
   
+    return 'Operación realizada con éxito';
+  }  
