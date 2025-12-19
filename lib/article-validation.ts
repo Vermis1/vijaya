@@ -33,7 +33,7 @@ export async function validateUniqueSlug(
 }
 
 /**
- * Genera un slug candidato agregando sufijo incremental
+ * Genera un slug candidato
  */
 export function generateUniqueSlugCandidate(
   baseSlug: string,
@@ -43,11 +43,12 @@ export function generateUniqueSlugCandidate(
 }
 
 /**
- * Sanitiza y valida un slug (FORMA ESPERADA POR ArticleForm)
+ * Sanitiza y valida un slug
+ * ⚠️ CONTRATO FIJO – usado por ArticleForm
  */
 export function sanitizeSlug(input: string): {
   valid: boolean;
-  value?: string;
+  sanitized?: string;
   error?: string;
 } {
   if (!input || typeof input !== 'string') {
@@ -73,7 +74,7 @@ export function sanitizeSlug(input: string): {
 
   return {
     valid: true,
-    value: sanitized,
+    sanitized,
   };
 }
 
@@ -84,13 +85,13 @@ export async function generateUniqueSlug(
   title: string,
   articleId?: string
 ): Promise<string> {
-  const sanitized = sanitizeSlug(title);
+  const result = sanitizeSlug(title);
 
-  if (!sanitized.valid || !sanitized.value) {
-    throw new Error(sanitized.error || 'Slug inválido');
+  if (!result.valid || !result.sanitized) {
+    throw new Error(result.error || 'Slug inválido');
   }
 
-  const baseSlug = sanitized.value;
+  const baseSlug = result.sanitized;
   let attempt = 0;
 
   while (true) {
