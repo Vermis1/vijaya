@@ -57,11 +57,30 @@ export function getReadableErrorMessage(error: any): string {
     return getReadableErrorMessage(error);
   }
   export function getSuccessMessage(
-    message?: string
+    action?: string,
+    title?: string
   ): string {
-    if (message && typeof message === 'string') {
-      return message;
-    }
+    switch (action) {
+      case 'create':
+        return title
+          ? `Artículo creado correctamente: "${title}"`
+          : 'Artículo creado correctamente';
   
-    return 'Operación realizada con éxito';
-  }  
+      case 'update':
+        return title
+          ? `Artículo actualizado correctamente: "${title}"`
+          : 'Artículo actualizado correctamente';
+  
+      case 'delete':
+        return title
+          ? `Artículo eliminado correctamente: "${title}"`
+          : 'Artículo eliminado correctamente';
+  
+      default:
+        if (typeof action === 'string') {
+          return action;
+        }
+  
+        return 'Operación realizada con éxito';
+    }
+  }
