@@ -105,3 +105,41 @@ export async function generateUniqueSlug(
     attempt++;
   }
 }
+/**
+ * Valida una URL de imagen
+ */
+export function validateImageUrl(
+    url: string
+  ): { valid: boolean; error?: string } {
+    if (!url || typeof url !== 'string') {
+      return {
+        valid: false,
+        error: 'La URL de la imagen no puede estar vacía',
+      };
+    }
+  
+    try {
+      const parsed = new URL(url);
+  
+      const validExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+      const hasValidExtension = validExtensions.some(ext =>
+        parsed.pathname.toLowerCase().endsWith(ext)
+      );
+  
+      if (!hasValidExtension) {
+        return {
+          valid: false,
+          error:
+            'La imagen debe ser una URL válida (.jpg, .png, .webp, .gif)',
+        };
+      }
+  
+      return { valid: true };
+    } catch {
+      return {
+        valid: false,
+        error: 'La URL de la imagen no es válida',
+      };
+    }
+  }
+  
