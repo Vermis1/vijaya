@@ -1,30 +1,30 @@
 export function getReadableErrorMessage(error: any): string {
     const errorMessage = error?.message || '';
-    
+  
     // Mapeo de errores comunes de Supabase
     const errorMap: Record<string, string> = {
-      'duplicate key value violates unique constraint "articles_slug_key"': 
+      'duplicate key value violates unique constraint "articles_slug_key"':
         'Este slug ya está en uso. Por favor, elige otro nombre para el artículo.',
-      
-      'duplicate key value violates unique constraint': 
+  
+      'duplicate key value violates unique constraint':
         'Ya existe un registro con estos datos. Por favor, verifica los campos únicos.',
-      
-      'new row violates row-level security policy': 
+  
+      'new row violates row-level security policy':
         'No tienes permisos para realizar esta acción.',
-      
-      'permission denied': 
+  
+      'permission denied':
         'No tienes permisos suficientes para esta operación.',
-      
-      'JWT expired': 
+  
+      'JWT expired':
         'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.',
-      
-      'Failed to fetch': 
+  
+      'Failed to fetch':
         'Error de conexión. Verifica tu conexión a internet e intenta nuevamente.',
-      
-      'invalid input syntax for type uuid': 
+  
+      'invalid input syntax for type uuid':
         'ID de artículo inválido.',
-      
-      'null value in column': 
+  
+      'null value in column':
         'Falta información obligatoria. Verifica que todos los campos requeridos estén completos.',
     };
   
@@ -52,3 +52,12 @@ export function getReadableErrorMessage(error: any): string {
     // Mensaje genérico final
     return 'Ocurrió un error al guardar el artículo. Por favor, intenta nuevamente.';
   }
+  
+  /**
+   * Alias requerido por ArticleForm.tsx
+   * NO reemplaza la lógica existente, solo la reutiliza
+   */
+  export function getValidationErrorMessage(error: unknown): string {
+    return getReadableErrorMessage(error);
+  }
+  
