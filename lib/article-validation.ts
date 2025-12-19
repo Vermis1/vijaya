@@ -17,17 +17,14 @@ export async function validateUniqueSlug(
     return { valid: false, error: 'Error al verificar slug' };
   }
 
-  // Si no existe, es válido
   if (!data) {
     return { valid: true };
   }
 
-  // Si existe pero es el mismo artículo (edición), es válido
   if (articleId && data.id === articleId) {
     return { valid: true };
   }
 
-  // Si existe y es otro artículo, no válido
   return {
     valid: false,
     error:
@@ -46,25 +43,54 @@ export function generateUniqueSlugCandidate(
 }
 
 /**
- * Limpia y normaliza un slug para URL
+ * Sanitiza y valida un slug (FORMA ESPERADA POR ArticleForm)
  */
-export function sanitizeSlug(input: string): string {
-  return input
+export function sanitizeSlug(input: string): {
+  valid: boolean;
+  value?: string;
+  error?: string;
+} {
+  if (!input || typeof input !== 'string') {
+    return {
+      valid: false,
+      error: 'El slug no puede estar vacío',
+    };
+  }
+
+  const sanitized = input
     .toLowerCase()
     .trim()
     .replace(/[^\w\s-]/g, '')
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-');
+
+  if (!sanitized) {
+    return {
+      valid: false,
+      error: 'El slug resultante es inválido',
+    };
+  }
+
+  return {
+    valid: true,
+    value: sanitized,
+  };
 }
 
 /**
- * Genera un slug único definitivo usando los helpers existentes
+ * Genera un slug único definitivo
  */
 export async function generateUniqueSlug(
   title: string,
   articleId?: string
 ): Promise<string> {
-  const baseSlug = sanitizeSlug(title);
+  const sanitized = sanitizeSlug(title);
+
+  if (!sanitized.valid || !sanitized.value) {
+    throw new Error(sanitized.error || 'Slug inválido');
+  }
+
+  const baseSlug = sanitized.value;
   let attempt = 0;
 
   while (true) {
