@@ -1,14 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import TipTapEditor from '@/components/editor/TipTapEditor';
-import ImageUploader from '@/components/admin/ImageUploader';
-import { useToast } from '@/components/ui/toast';
 import { slugify } from '@/lib/utils';
 import { Article } from '@/types';
 import { 
@@ -21,26 +19,27 @@ import {
 import { 
   validateUniqueSlug, 
   generateUniqueSlug, 
-  sanitizeSlug 
+  sanitizeSlug,
+  validateImageUrl 
 } from '@/lib/article-validation';
 import { 
   getReadableErrorMessage, 
-  getValidationErrorMessage 
+  getValidationErrorMessage,
+  getSuccessMessage 
 } from '@/lib/error-messages';
-import { useArticleAutoSave } from '@/hooks/useAutoSave';
 
-interface ArticleFormV2Props {
+interface ArticleFormProps {
   userId: string;
   article?: Article;
 }
 
-export default function ArticleFormV2({ userId, article }: ArticleFormV2Props) {
+export default function ArticleFormFixed({ userId, article }: ArticleFormProps) {
   const router = useRouter();
-  const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [validatingSlug, setValidatingSlug] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [slugError, setSlugError] = useState<string | null>(null);
-  const [showRecoveryBanner, setShowRecoveryBanner] = useState(false);
   
   const [formData, setFormData] = useState({
     title: article?.title || '',
@@ -50,33 +49,6 @@ export default function ArticleFormV2({ userId, article }: ArticleFormV2Props) {
     content: article?.content || null,
     status: article?.status || 'draft' as ArticleStatus,
   });
-
-  // Auto-save hook
-  const autoSave = useArticleAutoSave(article?.id, formData, !loading);
-
-  // Check for recovery on mount
-  useEffect(() => {
-    if (!article) {
-      const { hasRecovery, timestamp } = autoSave.checkForRecovery();
-      if (hasRecovery && timestamp) {
-        setShowRecoveryBanner(true);
-      }
-    }
-  }, []);
-
-  const handleRecoverData = () => {
-    const recovered = autoSave.recover();
-    if (recovered) {
-      setFormData(recovered);
-      toast.success('Borrador recuperado exitosamente');
-      setShowRecoveryBanner(false);
-    }
-  };
-
-  const handleDismissRecovery = () => {
-    autoSave.clear();
-    setShowRecoveryBanner(false);
-  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -88,6 +60,7 @@ export default function ArticleFormV2({ userId, article }: ArticleFormV2Props) {
       if (name === 'title' && !article) {
         const autoSlug = slugify(value);
         newData.slug = autoSlug;
+        // Clear slug error when title changes
         setSlugError(null);
       }
       
@@ -126,6 +99,8 @@ export default function ArticleFormV2({ userId, article }: ArticleFormV2Props) {
   const handleSubmit = async (e: React.FormEvent, statusOverride?: ArticleStatus) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
+    setSuccess(null);
 
     const targetStatus = statusOverride || formData.status;
 
@@ -133,7 +108,14 @@ export default function ArticleFormV2({ userId, article }: ArticleFormV2Props) {
       // Client-side validation
       const validation = validateArticleData(formData);
       if (!validation.valid) {
-        toast.error(getValidationErrorMessage(validation.errors));
+        setError(getValidationErrorMessage(validation.errors));
+        setLoading(false);
+        return;
+      }
+
+      // Validate image URL if provided
+      if (formData.coverImage && !validateImageUrl(formData.coverImage)) {
+        setError('La URL de la imagen no es válida. Asegúrate de usar una URL completa (http:// o https://)');
         setLoading(false);
         return;
       }
@@ -144,18 +126,19 @@ export default function ArticleFormV2({ userId, article }: ArticleFormV2Props) {
         // Try to generate a unique slug
         const uniqueSlug = await generateUniqueSlug(formData.slug, article?.id);
         
-        // Use toast for confirmation instead of alert
+        // Ask user if they want to use the suggested slug
         const userConfirmed = confirm(
           `El slug "${formData.slug}" ya está en uso.\n\n` +
           `¿Deseas usar "${uniqueSlug}" en su lugar?`
         );
         
         if (!userConfirmed) {
-          toast.error(slugValidation.error || 'El slug ya está en uso');
+          setError(slugValidation.error || 'El slug ya está en uso');
           setLoading(false);
           return;
         }
         
+        // Update slug with unique version
         setFormData(prev => ({ ...prev, slug: uniqueSlug }));
         formData.slug = uniqueSlug;
       }
@@ -194,6 +177,8 @@ export default function ArticleFormV2({ userId, article }: ArticleFormV2Props) {
 
       if (article) {
         // UPDATE existing article
+        
+        // Calculate correct published_at
         const publishedAt = getPublishedAtForUpdate(
           article.status,
           targetStatus,
@@ -211,11 +196,9 @@ export default function ArticleFormV2({ userId, article }: ArticleFormV2Props) {
 
         if (updateError) throw updateError;
 
-        // Clear auto-save on successful save
-        autoSave.clear();
-
-        toast.success(`✓ "${formData.title}" actualizado exitosamente`);
+        setSuccess(getSuccessMessage('update', formData.title));
         
+        // Redirect after short delay to show success message
         setTimeout(() => {
           router.push('/admin/articles');
           router.refresh();
@@ -223,6 +206,8 @@ export default function ArticleFormV2({ userId, article }: ArticleFormV2Props) {
 
       } else {
         // CREATE new article
+        
+        // Set published_at for new published articles
         if (targetStatus === 'published') {
           articleData.published_at = new Date().toISOString();
         }
@@ -233,18 +218,15 @@ export default function ArticleFormV2({ userId, article }: ArticleFormV2Props) {
 
         if (insertError) throw insertError;
 
-        // Clear auto-save on successful save
-        autoSave.clear();
+        // Determine success message based on status
+        let operation: 'create' | 'draft' | 'submit' | 'publish' = 'create';
+        if (targetStatus === 'published') operation = 'publish';
+        else if (targetStatus === 'pending_review') operation = 'submit';
+        else if (targetStatus === 'draft') operation = 'draft';
 
-        // Show appropriate success message
-        if (targetStatus === 'published') {
-          toast.success(`🚀 "${formData.title}" publicado exitosamente`);
-        } else if (targetStatus === 'pending_review') {
-          toast.success(`📤 "${formData.title}" enviado a revisión`);
-        } else {
-          toast.success(`📝 "${formData.title}" guardado como borrador`);
-        }
+        setSuccess(getSuccessMessage(operation, formData.title));
         
+        // Redirect after short delay to show success message
         setTimeout(() => {
           router.push('/admin/articles');
           router.refresh();
@@ -253,80 +235,37 @@ export default function ArticleFormV2({ userId, article }: ArticleFormV2Props) {
 
     } catch (error: any) {
       console.error('Error saving article:', error);
-      toast.error(getReadableErrorMessage(error));
+      setError(getReadableErrorMessage(error));
     } finally {
       setLoading(false);
     }
   };
 
-  // Manual save (for auto-save trigger)
-  const handleManualSave = () => {
-    autoSave.save();
-    toast.info('Borrador guardado localmente');
-  };
-
   return (
     <form className="space-y-6">
-      {/* Recovery Banner */}
-      {showRecoveryBanner && (
-        <div className="vijaya-card p-4 bg-blue-50 border-2 border-blue-200 animate-fade-in">
+      {/* Error Message */}
+      {error && (
+        <div className="p-4 rounded-vijaya bg-red-50 border-2 border-red-200 text-red-700 animate-fade-in">
           <div className="flex items-start gap-3">
-            <svg className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+            <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
             </svg>
             <div className="flex-1">
-              <p className="text-sm font-medium text-blue-900 mb-2">
-                💾 Encontramos un borrador guardado automáticamente
-              </p>
-              <p className="text-xs text-blue-700 mb-3">
-                Guardado: {autoSave.getSavedTimestamp()?.toLocaleString('es-ES')}
-              </p>
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="secondary"
-                  onClick={handleRecoverData}
-                >
-                  Recuperar borrador
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="ghost"
-                  onClick={handleDismissRecovery}
-                >
-                  Descartar
-                </Button>
-              </div>
+              <p className="font-medium text-sm whitespace-pre-line">{error}</p>
             </div>
           </div>
         </div>
       )}
 
-      {/* Auto-save Indicator */}
-      {autoSave.hasUnsavedChanges && (
-        <div className="flex items-center justify-between p-3 bg-yellow-50 border border-yellow-200 rounded-vijaya text-sm">
-          <div className="flex items-center gap-2 text-yellow-800">
-            <svg className="w-4 h-4 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+      {/* Success Message */}
+      {success && (
+        <div className="p-4 rounded-vijaya bg-green-50 border-2 border-green-200 text-green-700 animate-fade-in">
+          <div className="flex items-start gap-3">
+            <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
             </svg>
-            <span>Cambios sin guardar</span>
+            <p className="font-medium text-sm">{success}</p>
           </div>
-          <Button
-            type="button"
-            size="sm"
-            variant="ghost"
-            onClick={handleManualSave}
-          >
-            Guardar ahora
-          </Button>
-        </div>
-      )}
-
-      {autoSave.lastSaved && !autoSave.hasUnsavedChanges && (
-        <div className="p-2 text-center text-xs text-gray-500">
-          ✓ Último guardado automático: {autoSave.lastSaved.toLocaleTimeString('es-ES')}
         </div>
       )}
 
@@ -385,15 +324,39 @@ export default function ArticleFormV2({ userId, article }: ArticleFormV2Props) {
             </p>
           )}
           <p className="text-xs text-gray-500">
-            Solo letras minúsculas, números y guiones. {formData.slug.length}/100
+            Se genera automáticamente del título. Solo letras minúsculas, números y guiones. {formData.slug.length}/100
           </p>
         </div>
 
-        {/* Image Uploader */}
-        <ImageUploader
-          currentImage={formData.coverImage}
-          onUploadComplete={(url) => setFormData(prev => ({ ...prev, coverImage: url }))}
-        />
+        {/* Cover Image */}
+        <div className="space-y-2">
+          <Label htmlFor="coverImage">Imagen de portada (URL)</Label>
+          <Input
+            id="coverImage"
+            name="coverImage"
+            value={formData.coverImage}
+            onChange={handleChange}
+            placeholder="https://ejemplo.com/imagen.jpg"
+            disabled={loading}
+            type="url"
+          />
+          {formData.coverImage && validateImageUrl(formData.coverImage) && (
+            <div className="mt-3 p-3 bg-gray-50 rounded-vijaya">
+              <p className="text-xs text-gray-600 mb-2">Vista previa:</p>
+              <img
+                src={formData.coverImage}
+                alt="Preview"
+                className="w-full max-w-md h-48 object-cover rounded-vijaya"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
+            </div>
+          )}
+          {formData.coverImage && !validateImageUrl(formData.coverImage) && (
+            <p className="text-xs text-amber-600">URL de imagen inválida</p>
+          )}
+        </div>
 
         {/* Tags */}
         <div className="space-y-2">
@@ -409,7 +372,7 @@ export default function ArticleFormV2({ userId, article }: ArticleFormV2Props) {
             disabled={loading}
           />
           <p className="text-xs text-gray-500">
-            Separa los tags con comas. Mínimo 1, máximo 10 tags.
+            Separa los tags con comas. Mínimo 1, máximo 10 tags. Ejemplo: cultivo, salud, cbd
           </p>
           {formData.tags && (
             <div className="flex flex-wrap gap-2 mt-2">
@@ -422,10 +385,10 @@ export default function ArticleFormV2({ userId, article }: ArticleFormV2Props) {
           )}
         </div>
 
-        {/* Status Indicator */}
+        {/* Status Indicator (readonly display) */}
         {article && (
           <div className="p-4 bg-gray-50 rounded-vijaya">
-            <Label className="text-sm text-gray-600 mb-2 block">Estado actual</Label>
+            <Label className="text-sm text-gray-600 mb-2 block">Estado actual del artículo</Label>
             <span className={`
               inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium
               ${article.status === 'published' ? 'bg-green-100 text-green-700' : ''}
@@ -433,14 +396,18 @@ export default function ArticleFormV2({ userId, article }: ArticleFormV2Props) {
               ${article.status === 'pending_review' ? 'bg-yellow-100 text-yellow-700' : ''}
               ${article.status === 'rejected' ? 'bg-red-100 text-red-700' : ''}
             `}>
-              {article.status === 'published' && '✓ Publicado'}
-              {article.status === 'draft' && '📝 Borrador'}
-              {article.status === 'pending_review' && '⏳ En revisión'}
-              {article.status === 'rejected' && '✗ Rechazado'}
+              {article.status === 'published' && 'Publicado'}
+              {article.status === 'draft' && 'Borrador'}
+              {article.status === 'pending_review' && 'En revisión'}
+              {article.status === 'rejected' && 'Rechazado'}
             </span>
             {article.published_at && (
               <p className="text-xs text-gray-500 mt-2">
-                Publicado: {new Date(article.published_at).toLocaleDateString('es-ES')}
+                Publicado: {new Date(article.published_at).toLocaleDateString('es-ES', { 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}
               </p>
             )}
           </div>
@@ -455,14 +422,17 @@ export default function ArticleFormV2({ userId, article }: ArticleFormV2Props) {
         <TipTapEditor
           content={formData.content}
           onChange={(content) => setFormData(prev => ({ ...prev, content }))}
-          placeholder="Empieza a escribir tu artículo..."
+          placeholder="Empieza a escribir tu artículo... Usa la barra de herramientas para dar formato al texto."
         />
+        <p className="text-xs text-gray-500">
+          Tip: Usa los encabezados (H1, H2, H3) para estructurar tu contenido y mejorar el SEO
+        </p>
       </div>
 
       {/* Action Buttons */}
       <div className="vijaya-card p-6">
         <div className="space-y-4">
-          <p className="text-sm text-gray-600 font-medium">Elige cómo guardar:</p>
+          <p className="text-sm text-gray-600 font-medium">Elige cómo guardar tu artículo:</p>
           
           <div className="flex flex-wrap items-center gap-4">
             <Button
@@ -472,7 +442,7 @@ export default function ArticleFormV2({ userId, article }: ArticleFormV2Props) {
               variant="outline"
               size="lg"
             >
-              {loading ? 'Guardando...' : '📝 Guardar borrador'}
+              {loading ? 'Guardando...' : 'Guardar como borrador'}
             </Button>
 
             <Button
@@ -482,7 +452,7 @@ export default function ArticleFormV2({ userId, article }: ArticleFormV2Props) {
               variant="secondary"
               size="lg"
             >
-              {loading ? 'Enviando...' : '📤 Enviar a revisión'}
+              {loading ? 'Enviando...' : 'Enviar a revisión'}
             </Button>
 
             <Button
@@ -491,7 +461,7 @@ export default function ArticleFormV2({ userId, article }: ArticleFormV2Props) {
               disabled={loading}
               size="lg"
             >
-              {loading ? 'Publicando...' : '🚀 Publicar'}
+              {loading ? 'Publicando...' : 'Publicar ahora'}
             </Button>
 
             <Button
@@ -503,6 +473,17 @@ export default function ArticleFormV2({ userId, article }: ArticleFormV2Props) {
             >
               Cancelar
             </Button>
+          </div>
+
+          <div className="pt-4 border-t border-gray-200">
+            <p className="text-xs text-gray-500">
+              <span className="text-red-500">*</span> Campos obligatorios
+            </p>
+            <ul className="text-xs text-gray-500 mt-2 space-y-1 list-disc list-inside">
+              <li><strong>Borrador:</strong> Solo tú puedes verlo. Úsalo para guardar tu progreso.</li>
+              <li><strong>Revisión:</strong> Los editores lo revisarán antes de publicar.</li>
+              <li><strong>Publicar:</strong> El artículo será visible públicamente de inmediato.</li>
+            </ul>
           </div>
         </div>
       </div>
