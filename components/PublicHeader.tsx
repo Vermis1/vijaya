@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { createClientSupabaseClient } from '@/lib/supabase/client';
+import { createClient } from '@/lib/supabase/client';
+
 
 export default function PublicHeader() {
   const supabase = createClientSupabaseClient();
