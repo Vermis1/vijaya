@@ -21,19 +21,16 @@ async function getArticle(slug: string): Promise<Article | null> {
   const supabase = createServerSupabaseClient();
   
   const { data, error } = await supabase
-    .from('articles')
-    .select(`
-      *,
-      author:users(id, username, avatar_url)
-    `)
-    .eq('slug', slug)
-    .eq('status', 'published')
-    .single();
+  .from('articles')
+  .select('*')
+  .eq('slug', slug)
+  .eq('status', 'published')
+  .single();
 
-  if (error) {
-    console.error('Error fetching article:', error);
-    return null;
-  }
+if (error || !data) {
+  return null;
+}
+
 
   await supabase.rpc('increment_article_views', { article_id: data.id });
 
@@ -44,15 +41,12 @@ async function getRelatedArticles(articleId: string, tags: string[]): Promise<Ar
   const supabase = createServerSupabaseClient();
   
   const { data } = await supabase
-    .from('articles')
-    .select(`
-      *,
-      author:users(id, username, avatar_url)
-    `)
-    .eq('status', 'published')
-    .neq('id', articleId)
-    .overlaps('tags', tags)
-    .limit(3);
+  .from('articles')
+  .select('*')
+  .eq('status', 'published')
+  .neq('id', articleId)
+  .overlaps('tags', tags)
+  .limit(3);
 
   return data || [];
 }
