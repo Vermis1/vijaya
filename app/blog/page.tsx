@@ -18,8 +18,8 @@ async function getArticles(): Promise<Article[]> {
   const { data, error } = await supabase
   .from('articles')
   .select('*')
-  .eq('status', 'published');
-    .order('created_at', { ascending: false });
+  .eq('status', 'published')
+  .order('created_at', { ascending: false });
 
     if (error) {
       throw error;
