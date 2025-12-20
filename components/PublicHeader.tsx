@@ -3,12 +3,9 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { createClient } from '@/lib/supabase/client';
-
+import { supabase } from '@/lib/supabase/client';
 
 export default function PublicHeader() {
-  const supabase = createClientSupabaseClient();
-
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [open, setOpen] = useState(false);
@@ -17,8 +14,8 @@ export default function PublicHeader() {
 
   // Obtener sesión + perfil
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data }) => {
-      const sessionUser = data.session?.user ?? null;
+    supabase.auth.getUser().then(async ({ data }) => {
+      const sessionUser = data.user ?? null;
       setUser(sessionUser);
 
       if (sessionUser) {
@@ -36,13 +33,11 @@ export default function PublicHeader() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
-      if (!session) {
-        setProfile(null);
-      }
+      if (!session) setProfile(null);
     });
 
     return () => subscription.unsubscribe();
-  }, [supabase]);
+  }, []);
 
   // Cerrar dropdown al clickear afuera
   useEffect(() => {
@@ -103,7 +98,7 @@ export default function PublicHeader() {
               <div className="relative" ref={dropdownRef}>
                 {/* Avatar */}
                 <button
-                  onClick={() => setOpen((v) => !v)}
+                  onClick={() => setOpen(v => !v)}
                   className="w-10 h-10 rounded-full bg-vijaya-olive text-white font-semibold flex items-center justify-center"
                 >
                   {initial}
@@ -112,9 +107,9 @@ export default function PublicHeader() {
                 <AnimatePresence>
                   {open && (
                     <motion.div
-                      initial={{ opacity: 0, y: -5 }}
+                      initial={{ opacity: 0, y: -6 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -5 }}
+                      exit={{ opacity: 0, y: -6 }}
                       transition={{ duration: 0.15 }}
                       className="absolute right-0 mt-3 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden"
                     >
