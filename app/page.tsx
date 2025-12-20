@@ -26,35 +26,7 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen bg-vijaya-cream">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
-        <div className="vijaya-container">
-          <div className="flex items-center justify-between h-20">
-            <Link href="/" className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-vijaya-olive rounded-full flex items-center justify-center">
-                <span className="text-white text-2xl"><img src="img/logo.png" alt="Vijaya" className="w-full" /></span>
-              </div>
-              <div className="text-2xl font-heading font-semibold text-vijaya-black">
-                Vijaya
-              </div>
-            </Link>
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link href="/blog" className="text-gray-600 hover:text-vijaya-olive transition-colors font-medium">
-                Blog
-              </Link>
-              <Link href="/tienda" className="text-gray-600 hover:text-vijaya-olive transition-colors font-medium">
-                Tienda
-              </Link>
-              <Link href="/login" className="text-gray-600 hover:text-vijaya-olive transition-colors font-medium">
-                Iniciar Sesión
-              </Link>
-              <Link href="/register" className="vijaya-btn text-sm">
-                Comenzar
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </header>
+
 
       {/* Hero Section - Minimalista */}
       <section className="vijaya-section bg-texture relative overflow-hidden">
@@ -205,7 +177,7 @@ export default async function HomePage() {
             <div>
               <h4 className="font-semibold mb-4">Comunidad</h4>
               <ul className="space-y-2 text-white/70">
-                <li><a href="#" className="hover:text-white transition-colors">Instagram</a></li>
+                <li><a href="https://www.instagram.com/vijaya.uy/" className="hover:text-white transition-colors">Instagram</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Facebook</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Twitter</a></li>
               </ul>

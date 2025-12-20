@@ -90,33 +90,7 @@ export default async function ArticlePage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-vijaya-cream">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
-        <div className="vijaya-container">
-          <div className="flex items-center justify-between h-20">
-            <Link href="/" className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-vijaya-olive rounded-full flex items-center justify-center">
-                <span className="text-white text-2xl"><img src="img/logo.png" alt="Vijaya" className="w-full" /></span>
-              </div>
-              <div className="text-2xl font-heading font-semibold text-vijaya-black">
-                Vijaya
-              </div>
-            </Link>
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link href="/blog" className="text-gray-600 hover:text-vijaya-olive transition-colors font-medium">
-                Blog
-              </Link>
-              <Link href="/tienda" className="text-gray-600 hover:text-vijaya-olive transition-colors font-medium">
-                Tienda
-              </Link>
-              <Link href="/login" className="text-gray-600 hover:text-vijaya-olive transition-colors font-medium">
-                Iniciar Sesión
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </header>
-
+      
       {/* Article Header */}
       <article className="py-12">
         <div className="container mx-auto px-6 max-w-4xl">

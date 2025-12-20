@@ -62,32 +62,7 @@ export default async function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-vijaya-beige">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="text-3xl font-heading font-bold text-vijaya-green">
-              Vijaya
-            </Link>
-            <nav className="flex items-center space-x-6">
-              <Link href="/blog" className="text-gray-700 hover:text-vijaya-green transition-colors">
-                Blog
-              </Link>
-              {profile.role === 'admin' || profile.role === 'editor' ? (
-                <Link 
-                  href="/admin" 
-                  className="text-gray-700 hover:text-vijaya-green transition-colors"
-                >
-                  Admin
-                </Link>
-              ) : null}
-              <Link href="/profile" className="text-vijaya-green font-medium">
-                Perfil
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </header>
+
 
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-6xl mx-auto">

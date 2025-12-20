@@ -4,6 +4,7 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { WebsiteJsonLd, OrganizationJsonLd } from '@/components/JsonLd';
 import AnalyticsTracker from '@/components/analytics/AnalyticsTracker';
+import PublicHeader from '@/components/PublicHeader';
 
 
 
@@ -104,6 +105,7 @@ export default function RootLayout({
         )}
       >
         <AnalyticsTracker />
+        <PublicHeader />
         {children}
       </body>
     </html>
