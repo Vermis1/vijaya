@@ -8,10 +8,7 @@ async function getFeaturedArticles(): Promise<Article[]> {
   
   const { data, error } = await supabase
     .from('articles')
-    .select(`
-      *,
-      author:users(id, username, avatar_url)
-    `)
+    .select('*')
     .eq('status', 'published')
     .order('created_at', { ascending: false })
     .limit(6);

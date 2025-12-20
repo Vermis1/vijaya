@@ -4,6 +4,8 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { WebsiteJsonLd, OrganizationJsonLd } from '@/components/JsonLd';
 import AnalyticsTracker from '@/components/analytics/AnalyticsTracker';
+import PublicHeader from '@/components/PublicHeader';
+
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -94,7 +96,7 @@ export default function RootLayout({
         <WebsiteJsonLd />
         <OrganizationJsonLd />
       </head>
-      <body 
+      <body
         className={cn(
           'min-h-screen bg-vijaya-beige antialiased',
           inter.variable,
@@ -102,6 +104,11 @@ export default function RootLayout({
         )}
       >
         <AnalyticsTracker />
+
+        {/* HEADER PÚBLICO */}
+        <PublicHeader />
+
+        {/* CONTENIDO DE CADA PÁGINA */}
         {children}
       </body>
     </html>
