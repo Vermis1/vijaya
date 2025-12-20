@@ -9,6 +9,7 @@ import ArticleContent from '@/components/article/ArticleContent';
 import CommentSection from '@/components/article/CommentSection';
 import RelatedArticles from '@/components/article/RelatedArticles';
 
+
 export const revalidate = 300;
 
 interface Props {
@@ -82,6 +83,10 @@ export default async function ArticlePage({ params }: Props) {
   }
 
   const relatedArticles = await getRelatedArticles(article.id, article.tags);
+
+  const articleUrl = `https://www.vijaya.uy/article/${article.slug}`;
+  const encodedUrl = encodeURIComponent(articleUrl);
+  const encodedTitle = encodeURIComponent(article.title);
 
   return (
     <div className="min-h-screen bg-vijaya-cream">
@@ -180,19 +185,38 @@ export default async function ArticlePage({ params }: Props) {
             <ArticleContent content={article.content} />
           </div>
 
-          {/* Share Buttons */}
-          <div className="flex items-center gap-4 py-8 border-y-2 border-gray-100 mb-16">
-            <span className="text-gray-600 font-semibold">Compartir:</span>
-            <button className="px-6 py-3 bg-vijaya-beige text-vijaya-olive rounded-full hover:bg-vijaya-olive hover:text-white transition-all font-medium">
-              Twitter
-            </button>
-            <button className="px-6 py-3 bg-vijaya-beige text-vijaya-olive rounded-full hover:bg-vijaya-olive hover:text-white transition-all font-medium">
-              Facebook
-            </button>
-            <button className="px-6 py-3 bg-vijaya-beige text-vijaya-olive rounded-full hover:bg-vijaya-olive hover:text-white transition-all font-medium">
-              WhatsApp
-            </button>
-          </div>
+{/* Share Buttons */}
+<div className="flex items-center gap-4 py-8 border-y-2 border-gray-100 mb-16">
+  <span className="text-gray-600 font-semibold">Compartir:</span>
+
+  <a
+    href={`https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="px-6 py-3 bg-vijaya-beige text-vijaya-olive rounded-full hover:bg-vijaya-olive hover:text-white transition-all font-medium"
+  >
+    Twitter
+  </a>
+
+  <a
+    href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="px-6 py-3 bg-vijaya-beige text-vijaya-olive rounded-full hover:bg-vijaya-olive hover:text-white transition-all font-medium"
+  >
+    Facebook
+  </a>
+
+  <a
+    href={`https://wa.me/?text=${encodedTitle}%20${encodedUrl}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="px-6 py-3 bg-vijaya-beige text-vijaya-olive rounded-full hover:bg-vijaya-olive hover:text-white transition-all font-medium"
+  >
+    WhatsApp
+  </a>
+</div>
+
 
           {/* Author Bio */}
           <div className="vijaya-card p-8 mb-16">
